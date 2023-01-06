@@ -13,7 +13,7 @@ use dotenv::dotenv;
 impl PostgresDB {
     pub async fn init() -> Result<Self, sqlx::Error> {
         dotenv().ok();
-        let db_connection_str = std::env::var("DATABASE_URL").unwrap();
+        let db_connection_str = std::env::var("DATABASE_URL").expect("DATABASE_URL .env invalid");
         let pool = PgPoolOptions::new()
             .max_connections(5)
             .connect(&db_connection_str)

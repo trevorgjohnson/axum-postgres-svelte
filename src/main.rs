@@ -15,7 +15,7 @@ use dotenv::dotenv;
 #[tokio::main]
 async fn main() {
     dotenv().ok();
-    let webpage_dir = std::env::var("WWW_DIST").unwrap();
+    let webpage_dir = std::env::var("WWW_DIST").expect("WWW_DIST .env invalid");
     let serve_dir = get_service(ServeDir::new(webpage_dir)).handle_error(internal_error);
 
     let pool = PostgresDB::init().await.expect("Pool initalization failed");
@@ -40,5 +40,5 @@ async fn main() {
     axum::Server::bind(&addr)
         .serve(app.into_make_service())
         .await
-        .unwrap();
+        .expect("error binding to axum server");
 }
