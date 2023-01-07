@@ -33,7 +33,7 @@ async fn main() {
         .fallback_service(serve_dir)
         .with_state(pool);
 
-    let addr = std::net::SocketAddr::from(([127, 0, 0, 1], 3000));
+    let addr = std::net::SocketAddr::from(([127, 0, 0, 1], 8080));
 
     println!("Listening on: {}", addr);
 
