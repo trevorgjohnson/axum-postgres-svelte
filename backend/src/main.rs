@@ -26,7 +26,7 @@ async fn main() {
         .route("/people", get(get_all_people))
         .with_state(pool);
 
-    let addr = std::net::SocketAddr::from(([127, 0, 0, 1], 8080));
+    let addr = std::net::SocketAddr::from(([0,0,0,0], 8080));
 
     println!("Listening on: {}", addr);
 
