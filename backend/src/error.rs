@@ -31,10 +31,3 @@ impl From<SqlxError> for CustomError {
         }
     }
 }
-
-pub async fn internal_error(err: impl std::error::Error) -> impl IntoResponse {
-    (
-        StatusCode::INTERNAL_SERVER_ERROR,
-        Json(format!("Something went wrong...\n\nError: {}", err)),
-    )
-}

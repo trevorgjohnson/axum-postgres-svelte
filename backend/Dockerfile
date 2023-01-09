@@ -1,12 +1,34 @@
-# 1. This tells docker to use the Rust official image
-FROM rust
+# This tells docker to use the Rust official image
+FROM rust:1.66 as build
 
-# 2. Copy the files in your machine to the Docker image
-COPY ./ ./
+# Create a new empty shell project
+RUN USER=root cargo new --bin axum-postgres-svelte
+WORKDIR /axum-postgres-svelte
 
-# Build your program for release
+# Copy our manifests
+COPY ./Cargo.lock ./Cargo.lock
+COPY ./Cargo.toml ./Cargo.toml
+
+
+# Build only the dependencies to cache them
+RUN cargo build --release
+RUN rm src/*.rs
+
+# Now that the dependency is built, copy your source code
+COPY ./src ./src
+
+# Build for release.
+RUN cargo clean
 RUN cargo build --release
 
-# Run the binary
-CMD ["./target/release/axum-postgres-svelte"]
+# our final base
+FROM rust:1.66-slim-buster
 
+# copy the build artifact from the build stage
+COPY --from=build /axum-postgres-svelte/target/release/axum-postgres-svelte .
+
+# Set ENV variables
+ENV DATABASE_URL=postgres://postgres:postgres@85.239.241.0:5432/docker
+
+# set the startup command to run your binary
+CMD ["./axum-postgres-svelte"]
